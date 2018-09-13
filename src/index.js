@@ -48,7 +48,8 @@ export default function ({ types: t }) {
 
         const {
           requireName = 'require',
-          map
+          map,
+          deps = []
         } = opts;
 
         // test if require.resolve is present
@@ -77,9 +78,14 @@ export default function ({ types: t }) {
               requiredModuleName = map(requiredModuleName) || requiredModuleName;
             }
 
+            // add dependency
+            deps.push(requiredModuleName);
+
             args[0].value = requiredModuleName;
           }
         }
+
+        opts.deps = deps;
       },
       StringLiteral (path) {
         if (this.opts.esModule && this.functionDepth < 2 && path.node.value === '__esModule')
